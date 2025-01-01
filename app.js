@@ -1,19 +1,17 @@
 const express = require("express");
+const path = require("path");
 const routeHandler = require("./routes/index.js");
-// const { initializeDatabase } = require("./config/db.js"); // Import the initializeDatabase function
 
 module.exports = (config) => {
   const app = express();
   const port = process.env.PORT || 3000;
 
-  // Uncomment and use this if you want to initialize the database
-  // (async () => {
-  //   await initializeDatabase(); // Initialize the database
-  // })();
+  // Set the view engine to Pug
+  app.set("views", path.join(__dirname, "views"));
+  app.set("view engine", "pug");
 
-  // app.use(express.json());
+  app.use(express.json());
   app.use("/", routeHandler(config));
-  // app.use("/api", routes);
 
   app.get("/", (req, res) => {
     res.send(`Node and express server is running on port ${port}`);

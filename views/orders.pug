@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title Orders
+  body
+    h1 Orders
+    ul
+      each order in orders
+        li
+          p Order ID: #{order.id}
+          p User ID: #{order.userId}
+          p Email: #{order.email}
+          p Status: #{order.status}
+          p Items:
+          ul
+            each item in order.OrderItems
+              li
+                p Item ID: #{item.id}
+                p SKU: #{item.sku}
+                p Quantity: #{item.qty}
+                p Name: #{item.name}
+                p Price: #{item.price}

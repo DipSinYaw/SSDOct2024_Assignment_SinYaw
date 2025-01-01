@@ -1,41 +1,31 @@
 const express = require("express");
 const OrderService = require("../../services/OrderService");
+const OrderController = require("../../controllers/OrderController");
 
 module.exports = (config) => {
   const router = express.Router();
   const orderService = new OrderService(config.mysql.client);
+  const orderController = new OrderController(orderService);
 
   // Get all orders
-  router.get("/", async (req, res, next) => {
-    try {
-      const orders = await orderService.getAllOrders();
-      return res.render("orders", { orders });
-    } catch (err) {
-      return next(err);
-    }
-  });
+  router.get("/", (req, res, next) =>
+    orderController.getAllOrders(req, res, next)
+  );
 
   // Remove an item from an order
-  router.get("/remove/:itemId", async (req, res, next) => {
-    try {
-      const { itemId } = req.params;
-      await orderService.removeItem(itemId);
-      return res.redirect("/order");
-    } catch (err) {
-      return next(err);
-    }
-  });
+  router.get("/remove/:itemId", (req, res, next) =>
+    orderController.removeItem(req, res, next)
+  );
 
   // Buy an order
-  router.get("/buy/:orderId", async (req, res, next) => {
-    try {
-      const { orderId } = req.params;
-      await orderService.buyOrder(orderId);
-      return res.redirect("/order");
-    } catch (err) {
-      return next(err);
-    }
-  });
+  router.get("/buy/:orderId", (req, res, next) =>
+    orderController.buyOrder(req, res, next)
+  );
+
+  // Add a new order
+  router.post("/add", (req, res, next) =>
+    orderController.addOrder(req, res, next)
+  );
 
   return router;
 };

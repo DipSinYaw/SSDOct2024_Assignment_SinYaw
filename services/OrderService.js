@@ -47,6 +47,26 @@ class OrderService {
       throw new Error("Error buying order: " + error.message);
     }
   }
+
+  async addOrder(orderData) {
+    const { userId, email, status, items } = orderData;
+    const transaction = await this.client.transaction();
+    try {
+      const order = await this.models.Order.create(
+        { userId, email, status },
+        { transaction }
+      );
+      const orderItems = items.map((item) => ({
+        ...item,
+        OrderId: order.id,
+      }));
+      await this.models.OrderItem.bulkCreate(orderItems, { transaction });
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw new Error("Error adding order: " + error.message);
+    }
+  }
 }
 
 module.exports = OrderService;
