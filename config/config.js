@@ -1,5 +1,11 @@
+import "dotenv/config";
+
 const { Sequelize } = require("sequelize");
 const pkg = require("../package.json");
+
+// require("dotenv").config();
+
+console.log("DB_HOST", process.env.DB_HOST);
 
 const config = {
   applicationName: pkg.name,
@@ -22,7 +28,7 @@ config.mysql.client = new Sequelize(
   config.mysql.options.password,
   {
     host: config.mysql.options.host,
-    port: config.mysql.options.port,
+    // port: config.mysql.options.port,
     dialect: config.mysql.options.dialect,
   }
 );
