@@ -1,4 +1,3 @@
-const http = require("http");
 const config = require("../config/config.js");
 const reqApp = require("../app.js");
 
@@ -33,7 +32,6 @@ function onListening() {
   console.log(`Listening on ${bind}`);
 }
 
-const server = http.createServer(app);
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
+app.listen(port);
+app.on("error", onError);
+app.on("listening", onListening);
