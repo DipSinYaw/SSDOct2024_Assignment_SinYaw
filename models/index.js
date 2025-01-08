@@ -1,7 +1,7 @@
 const { Sequelize } = require("sequelize");
 const initializeOrder = require("./sequelize/Order");
 const initializeOrderItem = require("./sequelize/OrderItem");
-const initializeUser = require("./sequelize/Users");
+const initializeUser = require("./sequelize/UserModel");
 
 module.exports = (sequelize) => {
   if (!sequelize) {

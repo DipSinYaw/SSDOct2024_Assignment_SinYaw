@@ -1,63 +1,40 @@
 const { Op } = require("sequelize");
 const Models = require("../models");
 
-class OrderService {
+class UserService {
   constructor(sequelize) {
     if (!sequelize) {
       throw new Error("Sequelize instance is required");
     }
     Models(sequelize);
-    this.client = sequelize;
     this.models = sequelize.models;
   }
 
-  async getAllOrders() {
+  async getAllUsers() {
     try {
-      const orders = await this.models.Order.findAll({
-        include: [{ model: this.models.OrderItem }],
-      });
-      return orders;
+      const users = await this.models.User.findAll();
+      return users;
     } catch (error) {
       throw new Error("Error fetching orders: " + error.message);
     }
   }
 
-  async getOrderById(orderId) {
+  async getUserById(userId) {
     try {
-      const order = await this.models.Order.findByPk(orderId, {
-        include: [{ model: this.models.OrderItem }],
-      });
-      if (!order) {
+      const user = await this.models.User.findByPk(userId);
+      if (!user) {
         throw new Error("Order not found");
       }
-      return order;
+      return user;
     } catch (error) {
       throw new Error("Error fetching order: " + error.message);
     }
   }
 
-  async getOrdersByIds(orderIds) {
-    if (!Array.isArray(orderIds)) {
-      return res.status(400).json({ error: "Request body must be a list" });
-    }
-    try {
-      const orders = await this.models.Order.findAll({
-        where: {
-          id: orderIds,
-        },
-        include: [{ model: this.models.OrderItem }],
-        order: [["createdAt", "DESC"]],
-        limit: [1, 3],
-      });
-      return orders;
-    } catch (error) {
-      throw new Error("Error fetching orders by IDs: " + error.message);
-    }
-  }
-
   async removeUser(userReq) {
     try {
-      const user = await this.models.user.findByPk(userReq.id);
+
+      const user = await this.models.User.findByPk(userReq.id);
       if (user) {
         await user.destroy();
       } else {
@@ -68,11 +45,31 @@ class OrderService {
     }
   }
 
+  async updateUserById(userDetails) {
+    try {
+      const user = await this.models.User.findByPk(userDetails.id);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      Object.keys(userDetails).forEach(key => {
+        if (userDetails[key] !== null && key !== 'id') {
+          user[key] = userDetails[key];
+        }
+      });
+
+      await user.save(userDetails);
+      return user;
+    } catch (error) {
+      throw new Error("Error updating user: " + error.message);
+    }
+  }
+
   async addUser(user) {
     const { id, name, email } = user;
     // const transaction = await this.client.transaction();
     try {
-      const user = await this.models.user.create(
+      const user = await this.models.User.create(
         { id: id, name: name, email: email }
         // { transaction }
       );
@@ -89,4 +86,4 @@ class OrderService {
   }
 }
 
-module.exports = OrderService;
+module.exports = UserService;
