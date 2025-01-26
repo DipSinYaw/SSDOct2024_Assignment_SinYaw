@@ -2,8 +2,7 @@ const config = require("../config/config.js");
 const reqApp = require("../app.js");
 
 const app = reqApp(config);
-const port = process.env.PORT || 3000;
-app.set("port", port);
+const port = config.port;
 
 function onError(error) {
   if (error.syscall !== "listen") {
@@ -32,6 +31,6 @@ function onListening() {
   console.log(`Listening on ${bind}`);
 }
 
-app.listen(port);
-app.on("error", onError);
-app.on("listening", onListening);
+const server = app.listen(port);
+server.on("error", onError);
+server.on("listening", onListening);

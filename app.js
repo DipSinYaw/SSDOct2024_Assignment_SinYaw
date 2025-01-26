@@ -4,7 +4,6 @@ const routeHandler = require("./routes/index.js");
 
 module.exports = (config) => {
   const app = express();
-  const port = process.env.PORT || 3000;
 
   // Set the view engine to Pug
   app.set("views", path.join(__dirname, "views"));
@@ -16,6 +15,9 @@ module.exports = (config) => {
   app.get("/", (req, res) => {
     res.send(`Node and express server is running on port ${port}`);
   });
+
+
+  app.set("port", config.port);
 
   return app;
 };

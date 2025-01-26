@@ -6,7 +6,7 @@ const {validateUpdateUserReq, validateDeleteUserReq} = require("../../validators
 
 module.exports = (config) => {
     const router = express.Router();
-    const userService = new UserService(config.mysql.client);
+    const userService = new UserService(config.mysql.sequelize);
     const userController = new UserController(userService);
 
     // Get all orders
@@ -30,8 +30,12 @@ module.exports = (config) => {
     );
 
     // Add a new order
-    router.post("/add", (req, res, next) =>
-        userController.addUser(req, res, next)
+    router.post("/registerUser", (req, res, next) =>
+        userController.registerUser(req, res, next)
+    );
+
+    router.post("/login", validateLoginUser, (req, res, next) =>
+        userController.loginUser(req, res, next)
     );
 
     return router;

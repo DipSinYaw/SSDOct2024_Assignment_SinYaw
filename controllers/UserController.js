@@ -60,11 +60,29 @@ class UserController {
         }
     }
 
-    async addUser(req, res, next) {
+    async registerUser(req, res, next) {
         try {
             const user = req.body;
-            await this.userService.addUser(user);
+            await this.userService.registerUser(user);
             return res.json({ message: "User added successfully" });
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    async loginUser(req, res, next) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { email, password } = req.body;
+            const user = await this.userService.loginUser(email, password);
+            if (!user) {
+                return res.status(401).json({ message: "Invalid email or password" });
+            }
+            return res.json({ message: "Login successful", user });
         } catch (err) {
             return next(err);
         }

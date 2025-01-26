@@ -4,7 +4,7 @@ const OrderController = require("../../controllers/OrderController");
 
 module.exports = (config) => {
   const router = express.Router();
-  const orderService = new OrderService(config.mysql.client);
+  const orderService = new OrderService(config.mysql.sequelize);
   const orderController = new OrderController(orderService);
 
   // Get all orders
