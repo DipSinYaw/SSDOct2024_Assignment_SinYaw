@@ -6,8 +6,6 @@ async function hashPassword(password) {
     return await bcrypt.hash(password, salt);
 }
 
-
-
 async function validatePassword(plainPassword, hashedPassword) {
     try {
         return await bcrypt.compare(plainPassword, hashedPassword);

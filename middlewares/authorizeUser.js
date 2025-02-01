@@ -1,43 +1,22 @@
-const jwt = require("jsonwebtoken");
+const {verifyJWT} = require("../utils/token");
 
-function verifyJWT(req, res, next) {
-  const token =
-    req.headers.authorization && req.headers.authorization.split(" ")[1];
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+function authorizeUser(req, res, next) {
+    const token =
+        req.headers.authorization && req.headers.authorization.split(" ")[1];
 
-  jwt.verify(token, "your_secret_key", (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: "Forbidden-empty token" });
+    if (!token) {
+        return res.status(401).json({message: "Unauthorized"});
     }
 
-    // Check user role for authorization (replace with your logic)
-    const authorizedRoles = {
-      "/books": ["member", "librarian"], // Anyone can view books
-      "/books/[0-9]+/availability": ["librarian"], // Only librarians can update availability
-    };
-
-    console.log("decoded: ", decoded);
-
-    const requestedEndpoint = req.url;
-    const userRole = decoded.role;
-
-    const authorizedRole = Object.entries(authorizedRoles).find(
-      ([endpoint, roles]) => {
-        const regex = new RegExp(`^${endpoint}$`); // Create RegExp from endpoint
-        return regex.test(requestedEndpoint) && roles.includes(userRole);
-      }
-    );
-
-    if (!authorizedRole) {
-      return res.status(403).json({ message: "Forbidden-token" });
+    try {
+        const authorizedUserId = verifyJWT(token);
+        req.body.userId = authorizedUserId;
+        next();
+    } catch (err) {
+        return res.status(403).json({message: "Forbidden: Invalid token"});
     }
 
-    req.user = decoded; // Attach decoded user information to the request object
-    next();
-  });
 }
 
-module.exports = verifyJWT;
+module.exports = {authorizeUser};
