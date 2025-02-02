@@ -54,9 +54,9 @@ class ProductService {
         return updatedProduct;
     }
 
-    async deleteProduct(productId) {
+    async deleteProduct(productId, userId) {
         const deletedProduct = await this.models.Product.destroy({
-            where: {productId},
+            where: {productId, userId},
         });
         if (!deletedProduct) {
             throw new Error("Error deleting product");

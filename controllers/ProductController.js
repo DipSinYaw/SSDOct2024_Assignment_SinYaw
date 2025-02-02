@@ -63,8 +63,8 @@ class ProductController {
         }
 
         try {
-            const { productId } = req.body;
-            const deletedProduct = await this.productService.deleteProduct(productId);
+            const { productId, userId } = req.body;
+            const deletedProduct = await this.productService.deleteProduct(productId, userId);
             return res.json({ message: "Product deleted successfully", deletedProduct });
         } catch (err) {
             return res.status(500).json({ message: err.message });

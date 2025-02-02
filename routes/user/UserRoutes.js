@@ -1,5 +1,6 @@
 const express = require("express");
 const UserService = require("../../services/UserService");
+const ConfigService = require("../../services/ConfigService");
 const UserController = require("../../controllers/UserController");
 const {
     validateUpdateUserReq,
@@ -8,9 +9,14 @@ const {
     validateLoginUser,
 } = require("../../middlewares/userValidator");
 
+const {
+    authorizeUser, logoutUser
+} = require("../../middlewares/authorizeUser");
+
 module.exports = (config) => {
     const router = express.Router();
     const userService = new UserService(config.mysql.sequelize);
+    const configService = new ConfigService(config.mysql.sequelize);
     const userController = new UserController(userService);
 
     // Get all orders
@@ -30,6 +36,10 @@ module.exports = (config) => {
 
     router.post("/login", validateLoginUser, (req, res, next) =>
         userController.loginUser(req, res, next)
+    );
+
+    router.post("/logout", authorizeUser, logoutUser , (req, res, next) =>
+        res.json({ message: "Logout successful" })
     );
 
     // Remove an item from an order

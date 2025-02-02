@@ -38,7 +38,7 @@ module.exports = (config) => {
     );
 
     // Remove a product
-    router.delete("/remove", (req, res, next) =>
+    router.delete("/remove", authorizeUser, (req, res, next) =>
         productController.deleteProduct(req, res)
     );
 

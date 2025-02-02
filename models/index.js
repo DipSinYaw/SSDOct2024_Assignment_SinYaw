@@ -3,6 +3,7 @@ const initializeOrder = require("./sequelize/Order");
 const initializeOrderItem = require("./sequelize/OrderItem");
 const initializeUser = require("./sequelize/UserModel");
 const initializeProduct = require("./sequelize/ProductModel");
+const initializeConfig = require("./sequelize/ConfigModel");
 
 module.exports = (sequelize) => {
   if (!sequelize) {
@@ -11,8 +12,9 @@ module.exports = (sequelize) => {
 
   const Order = initializeOrder(sequelize);
   const OrderItem = initializeOrderItem(sequelize);
-  const Users = initializeUser(sequelize);
-  const Products = initializeProduct(sequelize);
+  const User = initializeUser(sequelize);
+  const Product = initializeProduct(sequelize);
+  const Config = initializeConfig(sequelize);
 
   //Order join OrderItem
   Order.hasMany(OrderItem, {
@@ -42,7 +44,8 @@ module.exports = (sequelize) => {
   return {
     Order,
     OrderItem,
-    Users,
-    Products,
+    Users: User,
+    Products: Product,
+    Config,
   };
 };
