@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const path = require("path");
 const config = require("./config/config.js");
 const routeHandler = require("./routes/index.js");
@@ -9,6 +10,7 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+app.use(cors());
 app.use(express.json());
 app.use("/", routeHandler(config));
 

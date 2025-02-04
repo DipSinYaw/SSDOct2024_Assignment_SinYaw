@@ -30,13 +30,19 @@ class UserService {
     }
 
     async registerUser(user) {
-        const { id, name, email, password } = user;
+        const existingUser = await this.models.User.findOne({ where: { email: user.email } });
+        if (existingUser) {
+            throw new Error("User already exists");
+        }
+
+        const { id, name, email, password, avatar } = user;
         const hashedPassword = await hashPassword(password);
         const newUser = await this.models.User.create({
             id,
             name,
             email,
             password: hashedPassword,
+            avatar,
         });
         if (!newUser) {
             throw new Error("Error registering user");
@@ -45,7 +51,12 @@ class UserService {
     }
 
     async loginUser(email, password) {
-        const user = await this.models.User.findOne({ where: { email: email } });
+
+        const user = await this.models.User.findOne({
+            where: { email: email },
+            attributes: ['id', 'name', 'avatar', 'password']
+        });
+
         if (!user) {
             throw new Error("Invalid email or password");
         }
@@ -55,8 +66,12 @@ class UserService {
             throw new Error("Invalid email or password");
         }
 
-        const token = await generateToken(user);
-        return { user, token };
+        const token = await generateToken(user.id);
+        const userData = user.toJSON();
+        delete userData.id;
+        delete userData.password;
+        userData.token = token;
+        return userData ;
     }
 
     async updateUserById(userDetails) {

@@ -33,6 +33,7 @@ class UserController {
     async registerUser(req, res) {
         try {
             const user = req.body;
+            user.name = req.body.userName
             const newUser = await this.userService.registerUser(user);
             return res.json({ message: "User added successfully", newUser });
         } catch (err) {
@@ -48,8 +49,8 @@ class UserController {
 
         try {
             const { email, password } = req.body;
-            const { user, token } = await this.userService.loginUser(email, password);
-            return res.json({ message: "Login successful", token });
+            const data = await this.userService.loginUser(email, password);
+            return res.json({ message: "Login successful", data });
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
