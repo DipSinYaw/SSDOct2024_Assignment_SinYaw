@@ -1,21 +1,25 @@
 const { verifyJWT, logout } = require("../utils/token");
 
-function authorizeUser(req, res, next) {
+async function authorizeUser(req, res, next) {
+    console.log("check authorizeUser!! ")
     const token =
         req.headers.authorization && req.headers.authorization.split(" ")[1];
+
+    console.log("check token: "+token)
 
     if (!token) {
         return res.status(401).json({message: "Unauthorized"});
     }
 
     try {
-        const authorizedUserId = verifyJWT(token);
+        const authorizedUserId = await verifyJWT(token);
+        console.log("check authorizedUserId authorizedUserId: "+JSON.stringify(authorizedUserId.id))
         req.body.userId = authorizedUserId;
+        console.log("check authorizedUserId body: "+JSON.stringify(req.body))
         next();
     } catch (err) {
         return res.status(403).json({message: "Forbidden: Invalid token"});
     }
-
 }
 
 function logoutUser(req, res) {

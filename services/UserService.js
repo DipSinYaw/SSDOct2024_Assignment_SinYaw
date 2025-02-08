@@ -53,7 +53,7 @@ class UserService {
     async loginUser(email, password) {
 
         const user = await this.models.User.findOne({
-            where: { email: email },
+            where: {email: email},
             attributes: ['id', 'name', 'avatar', 'password']
         });
 
@@ -66,16 +66,20 @@ class UserService {
             throw new Error("Invalid email or password");
         }
 
-        const token = await generateToken(user.id);
+        console.log("check loginUser user: " + JSON.stringify(user));
+        console.log("check loginUser user id : " + user.id);
+
+
+        const token = await generateToken(user);
         const userData = user.toJSON();
         delete userData.id;
         delete userData.password;
         userData.token = token;
-        return userData ;
+        return userData;
     }
 
     async updateUserById(userDetails) {
-        const user = await this.models.User.findByPk(userDetails.id);
+        const user = await this.models.User.findByPk(userDetails.userId);
         if (!user) {
             throw new Error("User not found");
         }
@@ -84,13 +88,13 @@ class UserService {
             userDetails.password = await hashPassword(userDetails.password);
         }
 
-        Object.keys(userDetails).forEach(key => {
-            if (userDetails[key] !== null && key !== 'id') {
-                user[key] = userDetails[key];
-            }
-        });
+        // Object.keys(userDetails).forEach(key => {
+        //     if (userDetails[key] !== null && key !== 'id') {
+        //         user[key] = userDetails[key];
+        //     }
+        // });
 
-        await user.save();
+        await user.update(userDetails, { where: { id: userDetails.userId } });
         return user;
     }
 

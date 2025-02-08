@@ -19,9 +19,13 @@ const validateLoginUser = [
     body('password').notEmpty().withMessage('Password is required')
 ];
 
+const validateUpdateUserById = [
+];
+
 module.exports = {
     validateUpdateUserReq,
     validateDeleteUserReq,
     validateRegisterUser,
     validateLoginUser,
+    validateUpdateUserById,
 };

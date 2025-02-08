@@ -117,9 +117,20 @@ class ProductController {
             const { productId } = req.body;
             const photo = req.file; // Access the uploaded file
 
-            if (!photo) {
-                return res.status(400).json({ message: "Photo is required" });
-            }
+
+
+
+            // console.log("check photo:"+photo.toString());
+            // console.log("check photo:"+photo.toString('base64'));
+            console.log("check photo:"+JSON.stringify(photo));
+            // console.log("check photo:"+JSON.stringify(photo.toString()));
+            // console.log("check photo:"+JSON.stringify(photo.toString('base64')));
+            const base64String = Buffer.from(photo.buffer).toString('base64');
+            const imgSrc = `data:${photo.mimetype};base64,${base64String}`;
+            console.log("check imgSrc:" + imgSrc);
+
+
+
 
             const updatedProduct = await this.productService.uploadPhoto(productId, photo);
             return res.json({ message: "Photo uploaded successfully", updatedProduct });
@@ -130,9 +141,17 @@ class ProductController {
 
     async getPhoto(req, res) {
         try {
-            const { productId } = req.params;
+            const { productId } = req.body;
             const photo = await this.productService.getPhoto(productId);
-            return res.json(photo);
+
+            if (!photo) {
+                return res.status(404).json({ message: "Photo not found" });
+            }
+
+            const base64String = Buffer.from(photo).toString('base64');
+            const imgSrc = `data:image/jpg;base64,${base64String}`;
+
+            return res.json(imgSrc);
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }

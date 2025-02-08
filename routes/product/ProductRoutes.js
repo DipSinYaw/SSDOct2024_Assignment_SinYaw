@@ -11,7 +11,7 @@ const {
 } = require("../../middlewares/authorizeUser");
 
 
-const upload = multer({dest: "uploads/"});
+const upload = multer({ storage: multer.memoryStorage() });
 module.exports = (config) => {
     const router = express.Router();
     const productService = new ProductService(config.mysql.sequelize);
@@ -45,6 +45,11 @@ module.exports = (config) => {
     router.put("/updatePhoto", authorizeUser, upload.single("photo"), (req, res, next) =>
         productController.uploadPhoto(req, res)
     );
+
+    // Get product photo
+    router.post("/getPhoto/", authorizeUser, (req, res, next) => {
+        productController.getPhoto(req, res)
+    });
 
     router.put("/like", authorizeUser, (req, res, next) => {
         productController.likeProduct(req, res)

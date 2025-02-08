@@ -32,7 +32,7 @@ module.exports = (sequelize) => {
 
   sequelize.sync();
 
-  // // Sync all models and alter tables to match the models
+  // Sync all models and alter tables to match the models
   // sequelize.sync({ alter: true })
   //     .then(() => {
   //       console.log("All models were synchronized successfully.");

@@ -16,8 +16,8 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users', // Name of the User model
-        key: 'id', // Key in the User model that we're referencing
+        model: 'Users',
+        key: 'id',
       },
     },
     userLikes: {
@@ -27,14 +27,26 @@ module.exports = (sequelize) => {
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 1, // Set default value to 1
+      defaultValue: 1,
     },
     photo: {
-      type: DataTypes.BLOB("long"), // Add this field to store the photo
+      type: DataTypes.BLOB("long"),
+      allowNull: true,
+    },
+    price: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    specification: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    category: {
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
   }, {
-    tableName: "Products" // Explicitly set the table name
+    tableName: "Products"
   });
 
   return Product;
