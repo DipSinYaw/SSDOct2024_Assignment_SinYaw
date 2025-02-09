@@ -7,14 +7,14 @@ function generateToken(user) {
     const payload = {
         id: user.id
     };
-    return jwt.sign(payload, secret, {expiresIn: 7 * 24 * 60 * 60}); // Expires in 1 day
+    return jwt.sign(payload, secret, {expiresIn: 24 * 60 * 60}); // Expires in 1 day
 }
 
 function verifyJWT(token) {
 
-    // if (tokenMap.has(token)) {
-    //     throw new Error("Forbidden-empty token");
-    // }
+    if (tokenMap.has(token)) {
+        throw new Error("Forbidden-empty token from map");
+    }
 
     try {
         console.log("check decode start");
@@ -28,7 +28,7 @@ function verifyJWT(token) {
 
 function logout(token) {
     const decoded = jwt.decode(token, secret);
-    // tokenMap.set(token, decoded.exp);
+    tokenMap.set(token, decoded.exp);
 }
 
 module.exports = {generateToken, verifyJWT, logout, tokenMap};

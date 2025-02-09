@@ -18,7 +18,7 @@ module.exports = (config) => {
     const router = express.Router();
     const userService = new UserService(config.mysql.sequelize);
     const userController = new UserController(userService);
-    // const configService = new ConfigService(config.mysql.sequelize);
+    const configService = new ConfigService(config.mysql.sequelize);
 
     // Get all orders
     router.get("/", (req, res, next) =>
