@@ -21,7 +21,7 @@ module.exports = (config) => {
     const configService = new ConfigService(config.mysql.sequelize);
 
     // Get all orders
-    router.get("/", (req, res, next) =>
+    router.get("/", authorizeUser, (req, res, next) =>
         userController.getAllUsers(req, res, next)
     );
 
@@ -29,27 +29,27 @@ module.exports = (config) => {
         userController.registerUser(req, res, next);
     });
 
-    router.post("/login", validateLoginUser, (req, res, next) =>
-        userController.loginUser(req, res, next)
+    router.post("/login", validateLoginUser, (req, res, next) => {
+            userController.loginUser(req, res, next)
+        }
     );
 
     router.post("/logout", authorizeUser, logoutUser, (req, res, next) =>
         res.json({message: "Logout successful", date: true})
     );
 
-    router.post("/updateById", authorizeUser, (req, res, next) => {
-            console.log("check updateById start");
+    router.post("/updateById", authorizeUser, validateUpdateUserById, (req, res, next) => {
             userController.updateUser(req, res, next);
         }
     );
 
     // Remove an item from an order
-    router.delete("/remove", validateDeleteUserReq, (req, res, next) =>
+    router.delete("/remove", authorizeUser, validateDeleteUserReq, (req, res, next) =>
         userController.removeUser(req, res, next)
     );
 
     // Get order by ID
-    router.get("/:userId", (req, res, next) =>
+    router.get("/:userId", authorizeUser, (req, res, next) =>
         userController.getUserById(req, res, next)
     );
 

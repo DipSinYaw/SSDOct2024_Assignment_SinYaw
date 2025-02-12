@@ -1,10 +1,21 @@
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./config/swagger-output.json"); // Import generated spec
+
+
 const cors = require('cors');
 const path = require("path");
 const config = require("./config/config.js");
 const routeHandler = require("./routes/index.js");
 
+
 const app = express();
+
+// Serve the Swagger UI at a specific route
+app.use("/api-docs", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+}, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Set the view engine to Pug
 app.set("views", path.join(__dirname, "views"));

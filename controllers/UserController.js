@@ -49,7 +49,6 @@ class UserController {
         try {
             const { email, password } = req.body;
             const data = await this.userService.loginUser(email, password);
-            console.log("check login data:"+JSON.stringify(data));
             return res.json({ message: "Login successful", data });
         } catch (err) {
             return res.status(500).json({ message: err.message });
@@ -57,7 +56,6 @@ class UserController {
     }
 
     async updateUser(req, res) {
-        console.log("check updateUser!!")
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
