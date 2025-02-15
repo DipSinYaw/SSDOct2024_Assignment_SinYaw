@@ -63,5 +63,14 @@ module.exports = (config) => {
         productController.getLikesCount(req, res)
     });
 
+
+    router.get("/getProductsByCreatedAt", authorizeUser, (req, res, next) =>
+        productController.getProductsByCreatedAt(req, res)
+    );
+
+    router.get("/getProductsByLikes", authorizeUser, (req, res, next) =>
+        productController.getProductsByLikes(req, res)
+    );
+
     return router;
 }

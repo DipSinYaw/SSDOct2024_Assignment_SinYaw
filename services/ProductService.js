@@ -181,6 +181,28 @@ class ProductService {
     }
     return photo;
   }
+
+  async getProductsByCreatedAt(userId) {
+    const products = await this.models.Product.findAll({where:{userId},
+      order: [["createdAt", "DESC"]],
+    });
+    if (!products) {
+      throw new Error("No products found");
+    }
+    return products;
+  }
+
+  async getProductsByLikes(userId) {
+    const products = await this.models.Product.findAll({where:{userId}});
+    if (!products) {
+      throw new Error("No products found");
+    }
+
+    const filteredProducts = products.filter(product => product.userLikes.length > 0);
+    filteredProducts.sort((a, b) => b.userLikes.length - a.userLikes.length);
+    return filteredProducts;
+  }
+
 }
 
 module.exports = ProductService;

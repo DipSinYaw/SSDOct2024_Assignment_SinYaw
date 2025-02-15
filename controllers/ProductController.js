@@ -117,20 +117,10 @@ class ProductController {
             const { productId } = req.body;
             const photo = req.file; // Access the uploaded file
 
-
-
-
-            // console.log("check photo:"+photo.toString());
-            // console.log("check photo:"+photo.toString('base64'));
             console.log("check photo:"+JSON.stringify(photo));
-            // console.log("check photo:"+JSON.stringify(photo.toString()));
-            // console.log("check photo:"+JSON.stringify(photo.toString('base64')));
             const base64String = Buffer.from(photo.buffer).toString('base64');
             const imgSrc = `data:${photo.mimetype};base64,${base64String}`;
             console.log("check imgSrc:" + imgSrc);
-
-
-
 
             const updatedProduct = await this.productService.uploadPhoto(productId, photo);
             return res.json({ message: "Photo uploaded successfully", updatedProduct });
@@ -152,6 +142,36 @@ class ProductController {
             const imgSrc = `data:image/jpg;base64,${base64String}`;
 
             return res.json(imgSrc);
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    }
+
+    async getProductsByCreatedAt(req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { userId } = req.body;
+            const product = await this.productService.getProductsByCreatedAt(userId);
+            return res.json(product);
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    }
+
+    async getProductsByLikes(req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { userId } = req.body;
+            const product = await this.productService.getProductsByLikes(userId);
+            return res.json(product);
         } catch (err) {
             return res.status(500).json({ message: err.message });
         }
